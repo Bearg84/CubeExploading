@@ -1,76 +1,41 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CubeManager : MonoBehaviour
 {
-    [SerializeField] private float _explosionForce = 500f;
-    [SerializeField] private float _explosionRadius = 5f;
-    private float _initialSplitChance = 1f;
     private float _splitChance;
+    private CubeSpawner _spawner;
+    private ExplosionManager _explosionManager;
 
     private void Start()
     {
-        _splitChance = _initialSplitChance;
-
         SetRandomColor();
+        _spawner = FindObjectOfType<CubeSpawner>();
+        _explosionManager = FindObjectOfType<ExplosionManager>();
     }
 
     private void OnMouseDown()
     {
-        ApplyExplosionForce();
-
-        _splitChance *= 0.5f;
-
-        if (Random.value <= _splitChance)
+        if (_explosionManager != null)
         {
-            SpawnNewCubes();
+            _explosionManager.ApplyExplosionForce(transform.position);
+        }
+
+        if (_spawner != null)
+        {
+            _spawner.SpawnCubes(transform.position, transform.localScale / 2f, _splitChance);
         }
 
         Destroy(gameObject);
     }
 
-    private void SpawnNewCubes()
+    public void Initialize(float splitChance)
     {
-        int numberOfNewCubes = Random.Range(2, 7);
-
-        for (int i = 0; i < numberOfNewCubes; i++)
-        {
-            GameObject newCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            newCube.transform.position = transform.position;
-            newCube.transform.localScale = transform.localScale / 2f;
-
-            SetRandomColor(newCube);
-
-            CubeManager newCubeManager = newCube.AddComponent<CubeManager>();
-            newCubeManager._splitChance = _splitChance;
-            newCubeManager._initialSplitChance = _initialSplitChance;
-            newCubeManager._explosionForce = _explosionForce;
-            newCubeManager._explosionRadius = _explosionRadius;
-
-            Rigidbody rb = newCube.AddComponent<Rigidbody>();
-            rb.useGravity = true;
-        }
+        _splitChance = splitChance;
     }
 
-    private void ApplyExplosionForce()
+    private void SetRandomColor()
     {
-        Rigidbody[] rigidbodies = FindObjectsOfType<Rigidbody>();
-
-        foreach (Rigidbody rb in rigidbodies)
-        {
-            if (rb.gameObject != gameObject)
-            {
-                rb.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
-            }
-        }
-    }
-
-    private void SetRandomColor(GameObject cube = null)
-    {
-        GameObject targetCube = cube ?? gameObject;
-
-        Renderer renderer = targetCube.GetComponent<Renderer>();
+        Renderer renderer = GetComponent<Renderer>();
 
         if (renderer != null)
         {
