@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class CubeSpawner : MonoBehaviour
+public class CubeSpawner : SingletonBase<CubeSpawner>
 {
-    private float _initialSplitChance = 1f;
+    [SerializeField] private GameObject _cubePrefab;
     private float _splitChanceReductionFactor = 0.5f;
     private int _minCubesToSpawn = 2;
     private int _maxCubesToSpawn = 7;
@@ -13,16 +13,12 @@ public class CubeSpawner : MonoBehaviour
 
         for (int i = 0; i < numberOfNewCubes; i++)
         {
-            GameObject newCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            newCube.transform.position = position;
+            GameObject newCube = Instantiate(_cubePrefab, position, Quaternion.identity);
             newCube.transform.localScale = scale;
 
-            CubeManager newCubeManager = newCube.AddComponent<CubeManager>();
+            CubeManager newCubeManager = newCube.GetComponent<CubeManager>();
             float newSplitChance = parentSplitChance * _splitChanceReductionFactor;
             newCubeManager.Initialize(newSplitChance);
-
-            Rigidbody rigidbody = newCube.AddComponent<Rigidbody>();
-            rigidbody.useGravity = true;
         }
     }
 }

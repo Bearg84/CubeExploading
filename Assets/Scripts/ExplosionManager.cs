@@ -1,19 +1,20 @@
 using UnityEngine;
 
-public class ExplosionManager : MonoBehaviour
+public class ExplosionManager : SingletonBase<ExplosionManager>
 {
     [SerializeField] private float _explosionForce = 500f;
     [SerializeField] private float _explosionRadius = 5f;
 
     public void ApplyExplosionForce(Vector3 explosionPosition)
     {
-        Rigidbody[] allRigidbodies = FindObjectsOfType<Rigidbody>();
+        CubeManager[] newCubes = FindObjectsOfType<CubeManager>();
 
-        foreach (Rigidbody rigidbody in allRigidbodies)
+        foreach (CubeManager cubeManager in newCubes)
         {
-            if (rigidbody.gameObject != null)
+            Rigidbody rb = cubeManager.GetComponent<Rigidbody>();
+            if (rb != null)
             {
-                rigidbody.AddExplosionForce(_explosionForce, explosionPosition, _explosionRadius);
+                rb.AddExplosionForce(_explosionForce, explosionPosition, _explosionRadius);
             }
         }
     }

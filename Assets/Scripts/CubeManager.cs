@@ -3,28 +3,16 @@ using UnityEngine;
 public class CubeManager : MonoBehaviour
 {
     private float _splitChance;
-    private CubeSpawner _spawner;
-    private ExplosionManager _explosionManager;
 
     private void Start()
     {
         SetRandomColor();
-        _spawner = FindObjectOfType<CubeSpawner>();
-        _explosionManager = FindObjectOfType<ExplosionManager>();
     }
 
     private void OnMouseDown()
     {
-        if (_explosionManager != null)
-        {
-            _explosionManager.ApplyExplosionForce(transform.position);
-        }
-
-        if (_spawner != null)
-        {
-            _spawner.SpawnCubes(transform.position, transform.localScale / 2f, _splitChance);
-        }
-
+        ExplosionManager.Instance.ApplyExplosionForce(transform.position);
+        CubeSpawner.Instance.SpawnCubes(transform.position, transform.localScale / 2f, _splitChance);
         Destroy(gameObject);
     }
 
