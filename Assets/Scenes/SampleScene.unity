@@ -1231,7 +1231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 977a03731fd11c7429fe7a179586d161, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubePrefab: {fileID: 7932067111005241539, guid: 95da808f9870b43419b9ea11ad6d19af, type: 3}
+  _cubePrefab: {fileID: 7724738486629534719, guid: 95da808f9870b43419b9ea11ad6d19af, type: 3}
   _explosionManager: {fileID: 960479888}
   _splitChanceReductionFactor: 1
   _minCubesToSpawn: 2

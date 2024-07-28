@@ -12,6 +12,7 @@ public class CubeManager : MonoBehaviour
     private void Start()
     {
         SetRandomColor();
+
         if (_splitChance == 0)
         {
             _splitChance = 1.0f;
@@ -22,12 +23,12 @@ public class CubeManager : MonoBehaviour
     {
         if (_cubeSpawner != null && Random.value <= _splitChance)
         {
-            _cubeSpawner.SpawnCubes(transform.position, transform.localScale / 2f, _splitChance);
-        }
+            var newCubes = _cubeSpawner.SpawnCubes(transform.position, transform.localScale / 2f, _splitChance);
 
-        if (_explosionManager != null)
-        {
-            _explosionManager.ApplyExplosionForce(transform.position);
+            if (_explosionManager != null)
+            {
+                _explosionManager.ApplyExplosionForce(transform.position, newCubes);
+            }
         }
 
         Destroy(gameObject);
