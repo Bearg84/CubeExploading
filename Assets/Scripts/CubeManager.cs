@@ -1,33 +1,48 @@
 using UnityEngine;
 
+[RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(Rigidbody))]
 public class CubeManager : MonoBehaviour
 {
     private float _splitChance;
 
+    [SerializeField] private ExplosionManager _explosionManager;
+    [SerializeField] private CubeSpawner _cubeSpawner;
+
     private void Start()
     {
         SetRandomColor();
+        if (_splitChance == 0)
+        {
+            _splitChance = 1.0f;
+        }
     }
 
     private void OnMouseDown()
     {
-        ExplosionManager.Instance.ApplyExplosionForce(transform.position);
-        CubeSpawner.Instance.SpawnCubes(transform.position, transform.localScale / 2f, _splitChance);
+        if (_cubeSpawner != null && Random.value <= _splitChance)
+        {
+            _cubeSpawner.SpawnCubes(transform.position, transform.localScale / 2f, _splitChance);
+        }
+
+        if (_explosionManager != null)
+        {
+            _explosionManager.ApplyExplosionForce(transform.position);
+        }
+
         Destroy(gameObject);
     }
 
-    public void Initialize(float splitChance)
+    public void Initialize(float splitChance, CubeSpawner cubeSpawner, ExplosionManager explosionManager)
     {
         _splitChance = splitChance;
+        _cubeSpawner = cubeSpawner;
+        _explosionManager = explosionManager;
     }
 
     private void SetRandomColor()
     {
-        Renderer renderer = GetComponent<Renderer>();
-
-        if (renderer != null)
-        {
-            renderer.material.color = new Color(Random.value, Random.value, Random.value);
-        }
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderer.material.color = new Color(Random.value, Random.value, Random.value);
     }
 }
